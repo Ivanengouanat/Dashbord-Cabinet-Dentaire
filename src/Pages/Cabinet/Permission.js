@@ -1,0 +1,123 @@
+import Headers from "../../components/Headers";
+import { Box, Button, IconButton, useTheme } from "@mui/material";
+import { tokens } from "../../theme";
+import { DataGrid } from "@mui/x-data-grid";
+import Sidebars from "../../scenes/Sidebar";
+import { useNavigate } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import UpdateIcon from "@mui/icons-material/Update";
+
+const Permission = ({
+  dataPermission,
+  handleDeletePermission,
+  handleEditPermission,
+}) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const isCollapsed = Sidebars;
+  const navigate = useNavigate();
+  const navigationToAddPermission = () => {
+    navigate("/addpermission");
+  };
+
+  const columns = [
+    { field: "id", headerName: "ID" },
+    { field: "noms", headerName: "Nom et Prenoms", flex: 1 },
+
+    { field: "nbrjour", headerName: "Nombre de jours", flex: 1 },
+    { field: "debut", headerName: "Date de Debut", flex: 0.5 },
+    { field: "fin", headerName: "Date de Fin" },
+    { field: "raison", headerName: "Raison", flex: 1 },
+    { field: "Status", headerName: "Status", flex: 1 },
+    {
+      field: "action",
+      headerName: "Action",
+      flex: 1,
+      renderCell: (params) => {
+        const { row } = params || {};
+        console.log("params dans renderCell:", params);
+        return (
+          <Box display="flex" alignItems="center" gap="5px">
+            <IconButton
+              onClick={() => {
+                console.log("Données envoyées à handleEditPatient :", row);
+                handleEditPermission(row);
+              }}
+            >
+              <UpdateIcon />
+            </IconButton>
+            <IconButton onClick={() => handleDeletePermission(row.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        );
+      },
+    },
+  ];
+
+  return (
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Headers title="Permissions" subtitle="list Permissionne" />
+        <Box>
+          <Button
+            onClick={navigationToAddPermission}
+            sx={{
+              color: colors.grey[100],
+              ["&:hover"]: {
+                transform: "translateX(-5px)",
+                color: colors.greenAccent[400],
+                transition: "0.3s ease-in-out",
+              },
+            }}
+          >
+            {" "}
+            <AddIcon />
+            AddPermission
+          </Button>
+        </Box>
+      </Box>
+
+      <Box
+        marginLeft={isCollapsed ? "50px" : "20px"}
+        height="75vh"
+        width={isCollapsed ? "calc(100% - 80px)" : "calc(100% - 250px)"}
+        sx={{
+          "& .MuiDataGrid-root": { border: "none", color: colors.primary[100] },
+          "& .MuiDataGrid-cell": { border: "none" },
+          "& .name-column--cell": { color: colors.greenAccent[500] },
+          "& .css-yrdy0g-MuiDataGrid-columnHeaderRow": {
+            backgroundColor: colors.blueAccent[700],
+          },
+          "& .MuiDataGrid-columnHeader": {
+            backgroundColor: colors.blueAccent[700],
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-footerContainer": {
+            borderTop: "none",
+            backgroundColor: colors.blueAccent[700],
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: colors.primary[400],
+          },
+          "& .MuiCheckbox-root": {
+            color: `${colors.greenAccent[200]} !important`,
+          },
+          "& .MuiDataGrid-toolbarContainer  .MuiButton-text": {
+            color: colors.grey[100],
+          },
+        }}
+      >
+        <DataGrid
+          rows={dataPermission}
+          columns={columns}
+          checkboxSelection
+          rowHeight={40}
+        />
+      </Box>
+    </Box>
+  );
+};
+
+export default Permission;
