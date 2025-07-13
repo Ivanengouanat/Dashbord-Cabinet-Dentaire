@@ -39,6 +39,7 @@ import Geographie from "./Pages/Statistique/Geographie";
 import AddProduit from "./Pages/Inventaire/AddProduit";
 import AddMateriel from "./Pages/Inventaire/AddMateriel";
 
+import NotificationDetail from "./components/NotificationsDetails";
 import { v4 as uuidv4 } from "uuid";
 
 import User from "./User/User";
@@ -646,6 +647,7 @@ function App() {
                   />
                 }
               />
+              <Route path="notification" element={<NotificationDetail />} />
               <Route
                 path="/addmateriel"
                 element={

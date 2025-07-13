@@ -13,6 +13,7 @@
     "@fullcalendar/list": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@iconify/react": "^6.0.0",
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.3",
     "@mui/x-data-grid": "^7.24.1",
