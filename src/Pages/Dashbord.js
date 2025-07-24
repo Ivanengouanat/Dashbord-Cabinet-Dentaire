@@ -1,6 +1,8 @@
 import Headers from "../components/Headers";
 import { tokens } from "../theme";
 import { Box, useTheme, Typography, Button } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
+
 import Piechar from "../components/PieChar";
 import DownloadIcon from "@mui/icons-material/Download";
 import StartBox from "../components/StartBox";
@@ -12,6 +14,9 @@ import useIncrease from "../components/useIncrease";
 import LineChart from "../components/Linechar";
 import GeographyChart from "../components/GeographyChart";
 import Barchart from "../components/Barchar";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
 const Dashbord = ({
   ListPatient,
@@ -31,29 +36,57 @@ const Dashbord = ({
   const lastIncreaseSolde = useIncrease(ListAccount, (max = "50"));
   const lastIncreaseDate = useIncrease(ListDate, (max = "75"));
 
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  const settings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    slidesToShow: 1, // Tu peux ajuster selon la taille de l'écran
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 900, // tablette
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+      {
+        breakpoint: 1200, // desktop
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+    ],
+  };
+
   return (
     <Box
       sx={{
-        height: "90vh", // Garde le conteneur dans les limites de l'écran
-        overflow: "hidden", // Empêche l'apparition de la scrollbar
+        height: { xs: "auto", md: "90vh" }, // Garde le conteneur dans les limites de l'écran
+        overflowY: { xs: "visible", md: "hidden" }, // Empêche l'apparition de la scrollbar
       }}
     >
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Headers title="Tableau de Bord" subtitle="Catalogue" />
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadIcon sx={{ mr: "10px" }} />
-            Download
-          </Button>
-        </Box>
+        {!isMobile && (
+          <Box>
+            <Button
+              sx={{
+                backgroundColor: colors.blueAccent[700],
+                color: colors.grey[100],
+                fontSize: "14px",
+                fontWeight: "bold",
+                padding: "10px 20px",
+              }}
+            >
+              <DownloadIcon sx={{ mr: "10px" }} />
+              Download
+            </Button>
+          </Box>
+        )}
       </Box>
 
       {/* block patient, consultation... */}
@@ -66,131 +99,207 @@ const Dashbord = ({
         padding="0 20px"
       >
         {/* Row1 */}
-        <Box
-          sx={{
-            gridColumn: "span 3",
-            cursor: "pointer",
-            ["&:hover"]: {
-              transform: "translateY(-5px)",
-              transition: "0.3s ease-in-out",
-            },
-          }}
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          mb="-5px"
-        >
-          <StartBox
-            title={ListPatient.length}
-            increase={`+${lastIncrease}%`}
-            subtitle="Total Patients"
-            DataArray={ListPatient}
-            maxItems="100"
-            icon={
-              <Person2Icon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+        {!isMobile && (
+          <>
+            <Box
+              sx={{
+                gridColumn: "span 3",
+                cursor: "pointer",
+                ["&:hover"]: {
+                  transform: "translateY(-5px)",
+                  transition: "0.3s ease-in-out",
+                },
+              }}
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              mb="-5px"
+            >
+              <StartBox
+                title={ListPatient.length}
+                increase={`+${lastIncrease}%`}
+                subtitle="Total Patients"
+                DataArray={ListPatient}
+                maxItems="100"
+                icon={
+                  <Person2Icon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
               />
-            }
-          />
-        </Box>
-        <Box
-          sx={{
-            gridColumn: "span 3",
-            cursor: "pointer",
-            ["&:hover"]: {
-              transform: "translateY(-5px)",
-              transition: "0.3s ease-in-out",
-            },
-          }}
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          mb="-5px"
-        >
-          <StartBox
-            title={ListPersonnels.length}
-            increase={`+${lastIncreasePersonnel}%`}
-            subtitle=" Total Personnels"
-            DataArray={ListPersonnels}
-            maxItems={10}
-            icon={
-              <ManageAccountsIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+            </Box>
+            <Box
+              sx={{
+                gridColumn: "span 3",
+                cursor: "pointer",
+                ["&:hover"]: {
+                  transform: "translateY(-5px)",
+                  transition: "0.3s ease-in-out",
+                },
+              }}
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              mb="-5px"
+            >
+              <StartBox
+                title={ListPersonnels.length}
+                increase={`+${lastIncreasePersonnel}%`}
+                subtitle=" Total Personnels"
+                DataArray={ListPersonnels}
+                maxItems={10}
+                icon={
+                  <ManageAccountsIcon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
               />
-            }
-          />
-        </Box>
-        <Box
-          sx={{
-            gridColumn: "span 3",
-            cursor: "pointer",
-            ["&:hover"]: {
-              transform: "translateY(-5px)",
-              transition: "0.3s ease-in-out",
-            },
-          }}
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          mb="-5px"
-        >
-          <StartBox
-            title={ListAccount.length}
-            increase={`+${lastIncreaseSolde}%`}
-            subtitle="Registre Payement"
-            DataArray={ListAccount}
-            maxItems={50}
-            icon={
-              <Person2Icon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+            </Box>
+            <Box
+              sx={{
+                gridColumn: "span 3",
+                cursor: "pointer",
+                ["&:hover"]: {
+                  transform: "translateY(-5px)",
+                  transition: "0.3s ease-in-out",
+                },
+              }}
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              mb="-5px"
+            >
+              <StartBox
+                title={ListAccount.length}
+                increase={`+${lastIncreaseSolde}%`}
+                subtitle="Registre Payement"
+                DataArray={ListAccount}
+                maxItems={50}
+                icon={
+                  <Person2Icon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
               />
-            }
-          />
-        </Box>
-        <Box
-          sx={{
-            gridColumn: "span 3",
-            cursor: "pointer",
-            ["&:hover"]: {
-              transform: "translateY(-5px)",
-              transition: "0.3s ease-in-out",
-            },
-          }}
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          mb="-5px"
-        >
-          <StartBox
-            title={ListDate.length}
-            increase={`+${lastIncreaseDate}%`}
-            subtitle="Rendez-Vous"
-            DataArray={ListDate}
-            maxItems={75}
-            icon={
-              <ContactPhoneIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+            </Box>
+            <Box
+              sx={{
+                gridColumn: "span 3",
+                cursor: "pointer",
+                ["&:hover"]: {
+                  transform: "translateY(-5px)",
+                  transition: "0.3s ease-in-out",
+                },
+              }}
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              mb="-5px"
+            >
+              <StartBox
+                title={ListDate.length}
+                increase={`+${lastIncreaseDate}%`}
+                subtitle="Rendez-Vous"
+                DataArray={ListDate}
+                maxItems={75}
+                icon={
+                  <ContactPhoneIcon
+                    sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                  />
+                }
               />
-            }
-          />
-        </Box>
+            </Box>
+          </>
+        )}
+
+        {isMobile && (
+          <Box gridColumn="span 12">
+            <Slider
+              dots={true}
+              infinite={false}
+              speed={500}
+              slidesToShow={1}
+              slidesToScroll={1}
+              arrows={false}
+              autoplay={true}
+              autoplaySpeed={5000}
+            >
+              <Box px={1}>
+                <StartBox
+                  title={ListPatient.length}
+                  increase={`+${lastIncrease}%`}
+                  subtitle="Total Patients"
+                  DataArray={ListPatient}
+                  maxItems="100"
+                  icon={
+                    <Person2Icon
+                      sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    />
+                  }
+                />
+              </Box>
+              <Box px={1}>
+                <StartBox
+                  title={ListPersonnels.length}
+                  increase={`+${lastIncreasePersonnel}%`}
+                  subtitle=" Total Personnels"
+                  DataArray={ListPersonnels}
+                  maxItems={10}
+                  icon={
+                    <ManageAccountsIcon
+                      sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    />
+                  }
+                />
+              </Box>
+              <Box px={1}>
+                <StartBox
+                  title={ListAccount.length}
+                  increase={`+${lastIncreaseSolde}%`}
+                  subtitle="Registre Payement"
+                  DataArray={ListAccount}
+                  maxItems={50}
+                  icon={
+                    <Person2Icon
+                      sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    />
+                  }
+                />
+              </Box>
+              <Box px={1}>
+                <StartBox
+                  title={ListDate.length}
+                  increase={`+${lastIncreaseDate}%`}
+                  subtitle="Rendez-Vous"
+                  DataArray={ListDate}
+                  maxItems={75}
+                  icon={
+                    <ContactPhoneIcon
+                      sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                    />
+                  }
+                />
+              </Box>
+            </Slider>
+          </Box>
+        )}
 
         {/* Row 2 */}
 
         <Box
-          gridColumn="span 8"
+          gridColumn={isMobile ? "span 12" : "span 8"}
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           p="5px"
           sx={{
-            cursor: "pointer",
+            cursor: isMobile ? undefined : "pointer",
             ["&:hover"]: {
-              transform: "translateY(-5px)",
-              transition: "0.3s ease-in-out",
+              transform: isMobile ? undefined : "translateY(-5px)",
+              transition: isMobile ? undefined : "0.3s ease-in-out",
             },
           }}
         >
@@ -211,15 +320,15 @@ const Dashbord = ({
           </Box>
         </Box>
         <Box
-          gridColumn="span 4"
+          gridColumn={isMobile ? "span 12" : "span 4"}
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           p="0 3px"
           sx={{
-            cursor: "pointer",
+            cursor: isMobile ? undefined : "pointer",
             ["&:hover"]: {
-              transform: "translateY(-5px)",
-              transition: "0.3s ease-in-out",
+              transform: isMobile ? undefined : "translateY(-5px)",
+              transition: isMobile ? undefined : "0.3s ease-in-out",
             },
           }}
         >
@@ -244,36 +353,36 @@ const Dashbord = ({
 
         {/* Row 3 */}
         <Box
-          gridColumn="span 4"
+          gridColumn={isMobile ? "span 12" : "span 4"}
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           padding="5px"
-          mb="-40px"
+          mb={isMobile ? undefined : "-40px"}
           sx={{
-            cursor: "pointer",
+            cursor: isMobile ? undefined : "pointer",
             ["&:hover"]: {
-              transform: "translateY(-5px)",
-              transition: "0.3s ease-in-out",
+              transform: isMobile ? undefined : "translateY(-5px)",
+              transition: isMobile ? undefined : "0.3s ease-in-out",
             },
           }}
         >
           <Typography variant="h7" fontWeight="600">
             Carte Du Monde
           </Typography>
-          <Box height="150px">
+          <Box height={isMobile ? "138px" : "150px"}>
             <GeographyChart isDashboard={true} />
           </Box>
         </Box>
         <Box
-          gridColumn="span 8"
+          gridColumn={isMobile ? "span 12" : "span 8"}
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
-          mb="-40px"
+          mb={isMobile ? "-35px" : "-40px"}
           sx={{
-            cursor: "pointer",
+            cursor: isMobile ? undefined : "pointer",
             ["&:hover"]: {
-              transform: "translateY(-5px)",
-              transition: "0.3s ease-in-out",
+              transform: isMobile ? undefined : "translateY(-5px)",
+              transition: isMobile ? undefined : "0.3s ease-in-out",
             },
           }}
         >
@@ -294,7 +403,10 @@ const Dashbord = ({
             </Typography>
           </Box>
 
-          <Box height="200px">
+          <Box
+            height={isMobile ? "160px" : "200px"}
+            width={isMobile ? "100%" : undefined}
+          >
             <Barchart isDashboard={true} ListProduits={ListProduits} />
           </Box>
         </Box>

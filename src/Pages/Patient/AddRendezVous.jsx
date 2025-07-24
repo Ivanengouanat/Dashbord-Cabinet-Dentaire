@@ -91,7 +91,7 @@ const AddRendezVous = ({ handleAddRendezVous, initialDate }) => {
                 gap="15px"
                 gridTemplateColumns="repeat(8, minmax(0, 1fr))"
                 sx={{
-                  "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+                  "& > div": { gridColumn: isNonMobile ? undefined : "span 8" },
                 }}
               >
                 <TextField

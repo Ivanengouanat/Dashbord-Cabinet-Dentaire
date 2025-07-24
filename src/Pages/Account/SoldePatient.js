@@ -1,4 +1,4 @@
-import { Box, useTheme, Typography } from "@mui/material";
+import { Box, useTheme, Typography, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Headers from "../../components/Headers";
 import { tokens } from "../../theme";
@@ -10,8 +10,8 @@ const SoldePatient = ({ ListAccount }) => {
   const isCollapsed = Sidebars;
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const columns = [
+  const isMobile = useMediaQuery("(max-width:600px)");
+  const allcolumns = [
     {
       field: "id",
       headerName: "Id",
@@ -69,15 +69,29 @@ const SoldePatient = ({ ListAccount }) => {
     },
   ];
 
+  const columns = isMobile
+    ? allcolumns.filter(
+        (col) => col.field === "noms" || col.field === "prenoms"
+      )
+    : allcolumns;
+
   return (
     <Box>
       <Box>
         <Headers title="Accounts" subtitle="Payments" />
       </Box>
       <Box
-        marginLeft={isCollapsed ? "50px" : "20px"}
+        marginLeft={isMobile ? "0" : isCollapsed ? "50px" : "250px"}
         height="75vh"
-        width={isCollapsed ? "calc(100% - 80px)" : "calc(100% - 250px)"}
+        padding={isMobile ? " 10px" : undefined}
+        width={
+          isMobile
+            ? "100%"
+            : isCollapsed
+            ? "calc(100% - 80px)"
+            : "calc(100% - 250px)"
+        }
+        overflowX={isMobile ? "auto" : "unset"}
         sx={{
           "& .MuiDataGrid-root": { border: "none", color: colors.primary[100] },
           "& .MuiDataGrid-cell": { border: "none" },
@@ -108,8 +122,10 @@ const SoldePatient = ({ ListAccount }) => {
           checkboxSelection
           rows={ListAccount}
           columns={columns}
-          rowHeight={40}
+          rowHeight={isMobile ? 60 : 40}
+          density={isMobile ? "compact" : "standard"}
           slots={{ toolbar: GridToolbar }}
+          slotProps={{ toolbar: { showQuickFilter: true } }}
         />
       </Box>
     </Box>

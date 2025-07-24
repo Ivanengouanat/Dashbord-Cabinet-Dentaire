@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  useMediaQuery,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
@@ -33,7 +34,7 @@ const ListPatients = ({
   const isCollapsed = Sidebars;
   const navigate = useNavigate();
   const navigationToAddPatient = () => {
-    navigate("/addpatient");
+    navigate("/admin/addpatient");
   };
 
   useEffect(() => {
@@ -61,7 +62,9 @@ const ListPatients = ({
     handleCloseDialog();
   };
 
-  const columns = [
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
+  const allcolumns = [
     {
       field: "id",
       headerName: "Id",
@@ -118,6 +121,15 @@ const ListPatients = ({
     },
   ];
 
+  const columns = isMobile
+    ? allcolumns.filter(
+        (col) =>
+          col.field === "noms" ||
+          col.field === "prenoms" ||
+          col.field === "action"
+      )
+    : allcolumns;
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -143,9 +155,17 @@ const ListPatients = ({
       </Box>
 
       <Box
-        marginLeft={isCollapsed ? "50px" : "20px"}
+        marginLeft={isMobile ? "0" : isCollapsed ? "50px" : "250px"}
         height="75vh"
-        width={isCollapsed ? "calc(100% - 80px)" : "calc(100% - 250px)"}
+        padding={isMobile ? " 10px" : undefined}
+        width={
+          isMobile
+            ? "100%"
+            : isCollapsed
+            ? "calc(100% - 80px)"
+            : "calc(100% - 250px)"
+        }
+        overflowX={isMobile ? "auto" : "unset"}
         sx={{
           "& .MuiDataGrid-root": { border: "none", color: colors.primary[100] },
           "& .MuiDataGrid-cell": { border: "none" },
@@ -176,7 +196,8 @@ const ListPatients = ({
           checkboxSelection
           rows={ListPatient}
           columns={columns}
-          rowHeight={40}
+          rowHeight={isMobile ? 65 : 40}
+          density={isMobile ? "compact" : "standard"}
           slots={{ toolbar: GridToolbar }}
         />
         {/* Boîte de dialogue de confirmation */}

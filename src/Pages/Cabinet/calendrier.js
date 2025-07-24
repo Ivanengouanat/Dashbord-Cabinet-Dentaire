@@ -4,6 +4,7 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import Headers from "../../components/Headers";
@@ -57,6 +58,28 @@ const Calandrier = ({ ListDate, setListDate }) => {
     }
   };
 
+  // Responsive breakpoints
+  const isMobile = useMediaQuery("(max-width:600px)");
+  const isTablet = useMediaQuery("(max-width:900px)");
+
+  // Calendar display settings based on screen size
+  const defaultView = isMobile
+    ? "dayGridMonth"
+    : isTablet
+    ? "timeGridWeek"
+    : "dayGridMonth";
+
+  const headerToolbar = {
+    left: isMobile ? "prev,next" : "prev,next today",
+    center: "title", // toujours visible
+    right: isMobile
+      ? "listDay" // ou ce que tu veux
+      : "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+  };
+  console.log("headerToolbar:", headerToolbar);
+
+  const calendarHeight = isMobile ? "auto" : "70vh";
+
   return (
     <Box m="0px 20px">
       <Box>
@@ -64,50 +87,51 @@ const Calandrier = ({ ListDate, setListDate }) => {
       </Box>
       <Box display="flex" justifyContent="center" alignItems="center">
         {/* calendrier sidebar*/}
-        <Box
-          flex="1 1 20%"
-          backgroundColor={colors.primary[400]}
-          borderRadius="4px"
-        >
-          <Typography variant="h5">Evenements</Typography>
-          <List>
-            {Events.map((event) => (
-              <ListItem
-                key={event.id}
-                sx={{
-                  backgroundColor: colors.greenAccent[500],
-                  margin: "10px 0",
-                  borderRadius: "2px",
-                }}
-              >
-                <ListItemText
-                  primary={event.title}
-                  secondary={<Typography>{formatDate(event.start)}</Typography>}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {!isMobile && (
+          <Box
+            flex="1 1 20%"
+            backgroundColor={colors.primary[400]}
+            borderRadius="4px"
+          >
+            <Typography variant="h5">Evenements</Typography>
+            <List>
+              {Events.map((event) => (
+                <ListItem
+                  key={event.id}
+                  sx={{
+                    backgroundColor: colors.greenAccent[500],
+                    margin: "10px 0",
+                    borderRadius: "2px",
+                  }}
+                >
+                  <ListItemText
+                    primary={event.title}
+                    secondary={
+                      <Typography>{formatDate(event.start)}</Typography>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
+
         {/* calendrier */}
         <Box flex="1 1 100%" ml="5px">
           <Fullcalendar
-            height="70vh"
+            height={calendarHeight}
             plugins={[
               dayGridPlugin,
               timeGridPlugin,
               interactionPlugin,
               listPlugin,
             ]}
-            headerToolbar={{
-              left: "prev, next, today",
-              center: "title",
-              right: "dayGridMonth, timeGridWeek, timeGridDay, listMonth",
-            }}
-            initialView="dayGridMonth"
+            headerToolbar={headerToolbar}
+            initialView={defaultView}
             editable={true}
             selectable={true}
             selectMirror={true}
-            dayMaxEvents={true}
+            dayMaxEvents={!isMobile}
             select={handleDateClick}
             eventClick={handleEventClick}
             eventsSet={(events) => setEvents(events)}

@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  useMediaQuery,
 } from "@mui/material";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import EngineeringIcon from "@mui/icons-material/Engineering";
@@ -29,6 +30,7 @@ const Employers = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isCollapsed = Sidebars;
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   // Nouveaux états pour la boîte de dialogue
   const [open, setOpen] = useState(false);
@@ -51,7 +53,7 @@ const Employers = ({
     handleCloseDialog();
   };
 
-  const columns = [
+  const allcolumns = [
     {
       field: "id",
       headerName: "Id",
@@ -127,14 +129,26 @@ const Employers = ({
     },
   ];
 
+  const columns = isMobile
+    ? allcolumns.filter((col) => col.field === "noms" || col.field === "poste")
+    : allcolumns;
+
   return (
     <Box>
       <Headers title="Liste Des Employers" subtitle="Employers" />
 
       <Box
-        marginLeft={isCollapsed ? "50px" : "20px"}
+        marginLeft={isMobile ? "0" : isCollapsed ? "50px" : "250px"}
         height="75vh"
-        width={isCollapsed ? "calc(100% - 80px)" : "calc(100% - 250px)"}
+        padding={isMobile ? " 10px" : undefined}
+        width={
+          isMobile
+            ? "100%"
+            : isCollapsed
+            ? "calc(100% - 80px)"
+            : "calc(100% - 250px)"
+        }
+        overflowX={isMobile ? "auto" : "unset"}
         sx={{
           "& .MuiDataGrid-root": { border: "none", color: colors.primary[100] },
           "& .MuiDataGrid-cell": { border: "none" },
@@ -165,7 +179,8 @@ const Employers = ({
           checkboxSelection
           rows={ListPersonnels}
           columns={columns}
-          rowHeight={40}
+          rowHeight={isMobile ? 65 : 40}
+          density={isMobile ? "compact" : "standard"}
           slots={{ toolbar: GridToolbar }}
         />
         <Dialog open={open} onClose={handleCloseDialog}>

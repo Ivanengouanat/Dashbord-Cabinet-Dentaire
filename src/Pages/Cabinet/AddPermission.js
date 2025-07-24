@@ -20,7 +20,7 @@ const AddPermissionForm = ({
   initialPermission,
 }) => {
   const isNonMobile = useMediaQuery("(min-width: 600px)");
-
+  const isMobile = useMediaQuery("(max-width:600px)");
   useCalculateDays(values.debut, values.fin, setFieldValue);
   return (
     <form onSubmit={handleSubmit}>

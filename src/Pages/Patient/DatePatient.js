@@ -1,4 +1,11 @@
-import { Box, useTheme, Button, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  useTheme,
+  Button,
+  IconButton,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Headers from "../../components/Headers";
@@ -16,10 +23,12 @@ const DatePatient = ({ ListDate, handleDeleteDate, handleEditDate }) => {
   const isCollapsed = Sidebars;
   const navigate = useNavigate();
   const navigationToAddPatient = () => {
-    navigate("/addrendezvous");
+    navigate("/admin/addrendezvous");
   };
 
-  const columns = [
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
+  const allcolumns = [
     { field: "id", headerName: "ID", fles: 1 },
     { field: "noms", headerName: "Noms", flex: 1 },
     { field: "prenoms", headerName: "Prenoms", flex: 1 },
@@ -82,6 +91,12 @@ const DatePatient = ({ ListDate, handleDeleteDate, handleEditDate }) => {
     },
   ];
 
+  const columns = isMobile
+    ? allcolumns.filter(
+        (col) => col.field === "noms" || col.field === "prenoms"
+      )
+    : allcolumns;
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -107,9 +122,17 @@ const DatePatient = ({ ListDate, handleDeleteDate, handleEditDate }) => {
       </Box>
 
       <Box
-        marginLeft={isCollapsed ? "50px" : "20px"}
+        marginLeft={isMobile ? "0" : isCollapsed ? "50px" : "250px"}
         height="75vh"
-        width={isCollapsed ? "calc(100% - 80px)" : "calc(100% - 250px)"}
+        padding={isMobile ? " 10px" : undefined}
+        width={
+          isMobile
+            ? "100%"
+            : isCollapsed
+            ? "calc(100% - 80px)"
+            : "calc(100% - 250px)"
+        }
+        overflowX={isMobile ? "auto" : "unset"}
         sx={{
           "& .MuiDataGrid-root": { border: "none", color: colors.primary[100] },
           "& .MuiDataGrid-cell": { border: "none" },

@@ -130,7 +130,7 @@ const AddAccount = ({ handleAddAccount, initialAccount }) => {
                   gridTemplateColumns="repeat(8, minmax(0, 1fr))"
                   sx={{
                     "& > div": {
-                      gridColumn: isNonMobile ? undefined : "span 2",
+                      gridColumn: isNonMobile ? undefined : "span 8",
                     },
                   }}
                 >

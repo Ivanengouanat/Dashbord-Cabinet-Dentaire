@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  useMediaQuery,
 } from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -54,7 +55,9 @@ const ListProduit = ({
     handleCloseDialog();
   };
 
-  const columns = [
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  const allcolumns = [
     {
       field: "id",
       headerName: "Id",
@@ -134,14 +137,31 @@ const ListProduit = ({
     },
   ];
 
+  const columns = isMobile
+    ? allcolumns.filter(
+        (col) =>
+          col.field === "noms" ||
+          col.field === "quantite" ||
+          col.field === "action"
+      )
+    : allcolumns;
+
   return (
     <Box>
       <Headers title="Liste Des Produits" subtitle="Produits" />
 
       <Box
-        marginLeft={isCollapsed ? "50px" : "20px"}
+        marginLeft={isMobile ? "0" : isCollapsed ? "50px" : "250px"}
         height="75vh"
-        width={isCollapsed ? "calc(100% - 80px)" : "calc(100% - 250px)"}
+        padding={isMobile ? " 10px" : undefined}
+        width={
+          isMobile
+            ? "100%"
+            : isCollapsed
+            ? "calc(100% - 80px)"
+            : "calc(100% - 250px)"
+        }
+        overflowX={isMobile ? "auto" : "unset"}
         sx={{
           "& .MuiDataGrid-root": { border: "none", color: colors.primary[100] },
           "& .MuiDataGrid-cell": { border: "none" },
@@ -172,7 +192,8 @@ const ListProduit = ({
           checkboxSelection
           rows={ListProduits}
           columns={columns}
-          rowHeight={40}
+          rowHeight={isMobile ? 60 : 40}
+          density={isMobile ? "compact" : "standard"}
           slots={{ toolbar: GridToolbar }}
         />
         <Dialog open={open} onClose={handleCloseDialog}>

@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { colorModeContext, useMode } from "./theme";
 import Topbar from "./scenes/Topbar";
@@ -51,9 +51,15 @@ function App() {
     /* plie pour la sidebar */
   }
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   function handleSetCollapsed() {
-    setIsCollapsed(!isCollapsed);
+    if (isMobile) {
+      setMobileOpen((prev) => !prev); // ouvre / ferme le Drawer
+    } else {
+      setIsCollapsed(!isCollapsed); // replie / déplie la sidebar fixe
+    }
   }
 
   {
@@ -456,6 +462,7 @@ function App() {
         <div className="app">
           <Sidebars
             isCollapsed={isCollapsed}
+            mobileOpen={mobileOpen}
             handleSetCollapsed={handleSetCollapsed}
           />
           <main className="content">

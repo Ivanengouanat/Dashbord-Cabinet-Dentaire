@@ -1,5 +1,11 @@
 import Headers from "../../components/Headers";
-import { Box, Button, IconButton, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { tokens } from "../../theme";
 import { DataGrid } from "@mui/x-data-grid";
 import Sidebars from "../../scenes/Sidebar";
@@ -18,10 +24,11 @@ const Permission = ({
   const isCollapsed = Sidebars;
   const navigate = useNavigate();
   const navigationToAddPermission = () => {
-    navigate("/addpermission");
+    navigate("/admin/addpermission");
   };
+  const isMobile = useMediaQuery("(max-width:600px)");
 
-  const columns = [
+  const allcolumns = [
     { field: "id", headerName: "ID" },
     { field: "noms", headerName: "Nom et Prenoms", flex: 1 },
 
@@ -56,6 +63,10 @@ const Permission = ({
     },
   ];
 
+  const columns = isMobile
+    ? allcolumns.filter((col) => col.field === "noms" || col.field === "action")
+    : allcolumns;
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -80,9 +91,17 @@ const Permission = ({
       </Box>
 
       <Box
-        marginLeft={isCollapsed ? "50px" : "20px"}
+        marginLeft={isMobile ? "0" : isCollapsed ? "50px" : "250px"}
         height="75vh"
-        width={isCollapsed ? "calc(100% - 80px)" : "calc(100% - 250px)"}
+        padding={isMobile ? " 10px" : undefined}
+        width={
+          isMobile
+            ? "100%"
+            : isCollapsed
+            ? "calc(100% - 80px)"
+            : "calc(100% - 250px)"
+        }
+        overflowX={isMobile ? "auto" : "unset"}
         sx={{
           "& .MuiDataGrid-root": { border: "none", color: colors.primary[100] },
           "& .MuiDataGrid-cell": { border: "none" },
@@ -113,7 +132,7 @@ const Permission = ({
           rows={dataPermission}
           columns={columns}
           checkboxSelection
-          rowHeight={40}
+          rowHeight={isMobile ? 65 : 40}
         />
       </Box>
     </Box>
